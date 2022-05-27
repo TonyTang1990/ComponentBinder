@@ -1,0 +1,42 @@
+/*
+ * Description:             #ClassName#Binder.cs
+ * Author:                  #Author#
+ * Create Date:             #CreatedDate#
+ */
+
+using UnityEngine;
+using UnityEngine.UI;
+using TH.Modules.UI;
+
+namespace Game.Modules.UI
+{
+	/// <summary>
+	/// #ClassName#.cs单元格的组件绑定
+	/// </summary>
+	public partial class #ClassName#
+	{
+		#MEMBER_DEFINITION_LOOP#
+		/// <summary> #NodeDes# /// </summary>
+		private #NodeType# #NodeName#;#MEMBER_DEFINITION_LOOP#
+
+		/// <summary>
+		/// 缓存组件
+		/// </summary>
+		protected override void cacheComponent()
+		{
+			base.cacheComponent();
+			#MEMBER_INIT_LOOP#
+			#NodeName# = #NodeMemberName#.NodeDatas[#NodeIndex#].NodeTarget as #NodeType#;#MEMBER_INIT_LOOP#
+		}
+
+		/// <summary>
+		/// 清除组件
+		/// </summary>
+		protected override void clearComponent()
+		{
+			base.clearComponent();
+			#MEMBER_DISPOSE_LOOP#
+			#NodeName# = null;#MEMBER_DISPOSE_LOOP#
+		}
+	}
+}
