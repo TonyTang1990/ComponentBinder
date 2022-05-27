@@ -59,6 +59,9 @@ public static class ComponentBinderCodeGenerator
     /// <summary> 默认的UI节点绑定成员名 /// </summary>
     private const string DefaultUIBinderMemberName = "mComponentBinder";
 
+    /// <summary> 绑定文件后缀名 /// </summary>
+    private const string BinderFilePostFix = "Binder";
+
     #region 替换标签常量定义
     /// <summary> 成员循环替换标签 /// </summary>
     private const string MemberDefinitionLoopTag = "#MEMBER_DEFINITION_LOOP#";
@@ -71,6 +74,9 @@ public static class ComponentBinderCodeGenerator
 
     /// <summary> 文件创建时间替换标签 /// </summary>
     private const string CreatedDateSingleTag = "#CreatedDate#";
+
+    /// <summary> 单个文件名替换标签 /// </summary>
+    private const string FileNameSingleTag = "#FileName#";
 
     /// <summary> 单个类名替换标签 /// </summary>
     private const string ClassNameSingleTag = "#ClassName#";
@@ -294,36 +300,27 @@ public static class ComponentBinderCodeGenerator
     /// <summary>
     /// 生成窗口UI模板代码
     /// </summary>
-    /// <param name="scriptownername">脚本拥有者名字</param>
-    /// <param name="uinodedatalist">UI绑定节点数据</param>
-    private static void GenerateUIWindowCode(string scriptownername, List<ComponentBindData> uinodedatalist)
+    /// <param name="scriptOwnerName">脚本拥有者名字</param>
+    /// <param name="uiNodeDataList">UI绑定节点数据</param>
+    private static void GenerateUIWindowCode(string scriptOwnerName, List<ComponentBindData> uiNodeDataList)
     {
-        var templatecontent = GetBinderTemplateFileContent(BinderTemplateType.UIWindowTemplate);
-        if (templatecontent == null)
+        var templateContent = GetBinderTemplateFileContent(BinderTemplateType.UIWindowTemplate);
+        if (templateContent == null)
         {
             return;
         }
-        var ttemplate = new TTemplate(templatecontent);
+        var ttemplate = new TTemplate(templateContent);
         //通过自定义的替换规则和内容进行替换
-        var classname = scriptownername;
+        var fileName = scriptOwnerName;
+        var classname = scriptOwnerName;
+        //替换文件名
+        ttemplate.setValue(FileNameSingleTag, fileName);
         //替换类名
         ttemplate.setValue(ClassNameSingleTag, classname);
         //作者名替换
         ttemplate.setValue(AuthorSingleTag, GetAuthorName());
         //创建日期替换
         ttemplate.setValue(CreatedDateSingleTag, DateTime.Now.ToString("yyyy//MM/dd"));
-        //递归判定，生成UI节点成员变量声明
-        ttemplate.beginLoop(MemberDefinitionLoopTag);
-        GenerateMemberDefinitionCode(ttemplate, uinodedatalist);
-        ttemplate.endLoop();
-        //替换UI节点成员变量初始化
-        ttemplate.beginLoop(MemberInitLoopTag);
-        GenerateMemberInitCode(ttemplate, uinodedatalist, DefaultUIBinderMemberName);
-        ttemplate.endLoop();
-        //替换UI节点成员释放
-        ttemplate.beginLoop(MemberDisposeLoopTag);
-        GenerateMemberDisposeCode(ttemplate, uinodedatalist, DefaultUIBinderMemberName);
-        ttemplate.endLoop();
 
         var finalcontent = ttemplate.getContent();
         outputTemplateCodeGeneration(classname + ".cs", finalcontent);
@@ -333,8 +330,8 @@ public static class ComponentBinderCodeGenerator
     /// 生成窗口UI组件绑定代码
     /// </summary>
     /// <param name="scriptownername">脚本拥有者名字</param>
-    /// <param name="uinodedatalist">UI绑定节点数据</param>
-    private static void GenerateUIWindowBinderCode(string scriptownername, List<ComponentBindData> uinodedatalist)
+    /// <param name="uiNodeDataList">UI绑定节点数据</param>
+    private static void GenerateUIWindowBinderCode(string scriptownername, List<ComponentBindData> uiNodeDataList)
     {
         var templatecontent = GetBinderTemplateFileContent(BinderTemplateType.UIWindowBinder);
         if(templatecontent == null)
@@ -343,7 +340,10 @@ public static class ComponentBinderCodeGenerator
         }
         var ttemplate = new TTemplate(templatecontent);
         //通过自定义的替换规则和内容进行替换
+        var fileName = $"{scriptOwnerName}{BinderFilePostFix}";
         var classname = scriptownername;
+        //替换文件名
+        ttemplate.setValue(FileNameSingleTag, fileName);
         //替换类名
         ttemplate.setValue(ClassNameSingleTag, classname);
         //作者名替换
@@ -352,15 +352,15 @@ public static class ComponentBinderCodeGenerator
         ttemplate.setValue(CreatedDateSingleTag, DateTime.Now.ToString("yyyy//MM/dd"));
         //递归判定，生成UI节点成员变量声明
         ttemplate.beginLoop(MemberDefinitionLoopTag);
-        GenerateMemberDefinitionCode(ttemplate, uinodedatalist);
+        GenerateMemberDefinitionCode(ttemplate, uiNodeDataList);
         ttemplate.endLoop();
         //替换UI节点成员变量初始化
         ttemplate.beginLoop(MemberInitLoopTag);
-        GenerateMemberInitCode(ttemplate, uinodedatalist, DefaultUIBinderMemberName);
+        GenerateMemberInitCode(ttemplate, uiNodeDataList, DefaultUIBinderMemberName);
         ttemplate.endLoop();
         //替换UI节点成员释放
         ttemplate.beginLoop(MemberDisposeLoopTag);
-        GenerateMemberDisposeCode(ttemplate, uinodedatalist, DefaultUIBinderMemberName);
+        GenerateMemberDisposeCode(ttemplate, uiNodeDataList, DefaultUIBinderMemberName);
         ttemplate.endLoop();
 
         var finalcontent = ttemplate.getContent();
@@ -370,9 +370,9 @@ public static class ComponentBinderCodeGenerator
     /// <summary>
     /// 生成UI Cell模板代码
     /// </summary>
-    /// <param name="scriptownername">脚本拥有者名字</param>
-    /// <param name="uinodedatalist">UI绑定节点数据</param>
-    private static void GenerateUICellCode(string scriptownername, List<ComponentBindData> uinodedatalist)
+    /// <param name="scriptOwnerName">脚本拥有者名字</param>
+    /// <param name="uiNodeDataList">UI绑定节点数据</param>
+    private static void GenerateUICellCode(string scriptOwnerName, List<ComponentBindData> uiNodeDataList)
     {
         var templatecontent = GetBinderTemplateFileContent(BinderTemplateType.UICellTemplate);
         if (templatecontent == null)
@@ -381,25 +381,16 @@ public static class ComponentBinderCodeGenerator
         }
         var ttemplate = new TTemplate(templatecontent);
         //通过自定义的替换规则和内容进行替换
-        var classname = scriptownername;
+        var fileName = scriptOwnerName;
+        var classname = scriptOwnerName;
+        //替换文件名
+        ttemplate.setValue(FileNameSingleTag, fileName);
         //替换类名
         ttemplate.setValue(ClassNameSingleTag, classname);
         //作者名替换
         ttemplate.setValue(AuthorSingleTag, GetAuthorName());
         //创建日期替换
         ttemplate.setValue(CreatedDateSingleTag, DateTime.Now.ToString("yyyy//MM/dd"));
-        //递归判定，生成UI节点成员变量声明
-        ttemplate.beginLoop(MemberDefinitionLoopTag);
-        GenerateMemberDefinitionCode(ttemplate, uinodedatalist);
-        ttemplate.endLoop();
-        //替换UI节点成员变量初始化
-        ttemplate.beginLoop(MemberInitLoopTag);
-        GenerateMemberInitCode(ttemplate, uinodedatalist, DefaultUIBinderMemberName);
-        ttemplate.endLoop();
-        //替换UI节点成员释放
-        ttemplate.beginLoop(MemberDisposeLoopTag);
-        GenerateMemberDisposeCode(ttemplate, uinodedatalist, DefaultUIBinderMemberName);
-        ttemplate.endLoop();
 
         var finalcontent = ttemplate.getContent();
         outputTemplateCodeGeneration(classname + ".cs", finalcontent);
@@ -408,9 +399,9 @@ public static class ComponentBinderCodeGenerator
     /// <summary>
     /// 生成UI Cell组件绑定代码
     /// </summary>
-    /// <param name="scriptownername">脚本拥有者名字</param>
-    /// <param name="uinodedatalist">UI绑定节点数据</param>
-    private static void GenerateUICellBinderCode(string scriptownername, List<ComponentBindData> uinodedatalist)
+    /// <param name="scriptOwnerName">脚本拥有者名字</param>
+    /// <param name="uiNodeDataList">UI绑定节点数据</param>
+    private static void GenerateUICellBinderCode(string scriptOwnerName, List<ComponentBindData> uiNodeDataList)
     {
         var templatecontent = GetBinderTemplateFileContent(BinderTemplateType.UICellBinder);
         if (templatecontent == null)
@@ -419,7 +410,10 @@ public static class ComponentBinderCodeGenerator
         }
         var ttemplate = new TTemplate(templatecontent);
         //通过自定义的替换规则和内容进行替换
-        var classname = scriptownername;
+        var fileName = $"{scriptOwnerName}{BinderFilePostFix}";
+        var classname = scriptOwnerName;
+        //替换文件名
+        ttemplate.setValue(FileNameSingleTag, fileName);
         //替换类名
         ttemplate.setValue(ClassNameSingleTag, classname);
         //作者名替换
@@ -428,15 +422,15 @@ public static class ComponentBinderCodeGenerator
         ttemplate.setValue(CreatedDateSingleTag, DateTime.Now.ToString("yyyy//MM/dd"));
         //递归判定，生成UI节点成员变量声明
         ttemplate.beginLoop(MemberDefinitionLoopTag);
-        GenerateMemberDefinitionCode(ttemplate, uinodedatalist);
+        GenerateMemberDefinitionCode(ttemplate, uiNodeDataList);
         ttemplate.endLoop();
         //替换UI节点成员变量初始化
         ttemplate.beginLoop(MemberInitLoopTag);
-        GenerateMemberInitCode(ttemplate, uinodedatalist, DefaultUIBinderMemberName);
+        GenerateMemberInitCode(ttemplate, uiNodeDataList, DefaultUIBinderMemberName);
         ttemplate.endLoop();
         //替换UI节点成员释放
         ttemplate.beginLoop(MemberDisposeLoopTag);
-        GenerateMemberDisposeCode(ttemplate, uinodedatalist, DefaultUIBinderMemberName);
+        GenerateMemberDisposeCode(ttemplate, uiNodeDataList, DefaultUIBinderMemberName);
         ttemplate.endLoop();
 
         var finalcontent = ttemplate.getContent();

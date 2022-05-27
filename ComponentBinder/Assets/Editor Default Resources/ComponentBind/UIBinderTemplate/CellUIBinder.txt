@@ -1,5 +1,5 @@
 /*
- * Description:             #ClassName#Binder.cs
+ * Description:             #FileName#.cs
  * Author:                  #Author#
  * Create Date:             #CreatedDate#
  */
@@ -11,7 +11,7 @@ using TH.Modules.UI;
 namespace Game.Modules.UI
 {
 	/// <summary>
-	/// #ClassName#.cs单元格的组件绑定
+	/// #ClassName#单元格的组件绑定
 	/// </summary>
 	public partial class #ClassName#
 	{

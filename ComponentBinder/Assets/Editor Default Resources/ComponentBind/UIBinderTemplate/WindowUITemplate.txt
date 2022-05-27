@@ -1,5 +1,5 @@
 /*
- * Description:             #ClassName#.cs
+ * Description:             #FileName#.cs
  * Author:                  #Author#
  * Create Date:             #CreatedDate#
  */
