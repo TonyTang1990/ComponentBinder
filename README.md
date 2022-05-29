@@ -270,19 +270,19 @@ public class ComponentBinderSettingEditor : Editor
 
 - 组件绑定设置
 
-  [ComponentBinderSettingUI](/img/ComponentBinderSettingUI.PNG)
+  [ComponentBinderSettingUI](./img/ComponentBinderSettingUI.PNG)
 
 - 组件绑定选择
 
-  [ComponentBindChosenUI](/img/ComponentBindChosenUI.PNG)
+  [ComponentBindChosenUI](./img/ComponentBindChosenUI.PNG)
 
 - 自定义绑定节点代码注释
 
-  [CustomScriptNotation](/img/CustomScriptNotation.PNG)
+  [CustomScriptNotation](./img/CustomScriptNotation.PNG)
 
 - 窗口模板组件绑定设置以及代码生成
 
-  [WindowTemplateBindUsing](/img/WindowTemplateBindUsing.PNG)
+  [WindowTemplateBindUsing](./img/WindowTemplateBindUsing.PNG)
 
   ```CS
   /*
@@ -406,9 +406,9 @@ public class ComponentBinderSettingEditor : Editor
 
 更多的代码生成示例:
 
-[GameObjectBinderUI](/img/GameObjectBinderUI.PNG)
+[GameObjectBinderUI](./img/GameObjectBinderUI.PNG)
 
-[CellBinderUI](/img/CellBinderUI.PNG)
+[CellBinderUI](./img/CellBinderUI.PNG)
 
 ## 重点知识
 
