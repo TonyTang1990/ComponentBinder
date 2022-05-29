@@ -417,4 +417,4 @@ public class ComponentBinderSettingEditor : Editor
 
 ## 博客
 
-![]()
+[Unity组件绑定](http://tonytang1990.github.io/2022/05/29/%E7%BB%84%E4%BB%B6%E7%BB%91%E5%AE%9A/)
