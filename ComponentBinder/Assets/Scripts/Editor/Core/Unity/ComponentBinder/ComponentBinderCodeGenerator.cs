@@ -50,14 +50,14 @@ public static class ComponentBinderCodeGenerator
         { (int)BinderTemplateType.GameObjectBinder, "GameObjectUIBinder.txt" },
     };
 
-    /// <summary> UIBinder模本文件目录路径 /// </summary>
-    private const string UIBinderTemplateFolderPath = "ComponentBind/UIBinderTemplate/";
+    /// <summary> 默认Binder模本文件目录路径 /// </summary>
+    private const string BinderTemplateFolderPath = "ComponentBinder/BinderTemplate/";
 
-    /// <summary> UIBinder自动化代码生成输出目录 /// </summary>
-    public static string UIBinderCodeGeneratorOutputFolderPath = Path.Combine(Application.dataPath, "../UICodeAutogenerate/");
+    /// <summary> 默认Binder自动化代码生成输出目录 /// </summary>
+    public static string BinderCodeGeneratorOutputFolderPath = Path.Combine(Application.dataPath, "../ComponentBinder/CodeAutogenerate/");
 
-    /// <summary> 默认的UI节点绑定成员名 /// </summary>
-    private const string DefaultUIBinderMemberName = "mComponentBinder";
+    /// <summary> 默认的节点绑定成员名 /// </summary>
+    private const string DefaultBinderMemberName = "mComponentBinder";
 
     /// <summary> 绑定文件后缀名 /// </summary>
     private const string BinderFilePostFix = "Binder";
@@ -111,32 +111,27 @@ public static class ComponentBinderCodeGenerator
     /// </summary>
     /// <param name="bct">代码生成类型</param>
     /// <param name="go">UIBinder绑定挂载对象</param>
-    /// <param name="uinodedatalist">UI绑定节点数据</param>
-    public static bool GenerateCode(BinderCodeType bct, GameObject go, List<ComponentBindData> uinodedatalist)
+    /// <param name="uiNodeDataList">UI绑定节点数据</param>
+    public static bool GenerateCode(BinderCodeType bct, GameObject go, List<ComponentBinderData> uiNodeDataList)
     {
-        string templatefile;
-        var scriptownername = go.name;
-        if(!Directory.Exists(UIBinderCodeGeneratorOutputFolderPath))
-        {
-            Directory.CreateDirectory(UIBinderCodeGeneratorOutputFolderPath);
-        }
+        var scriptOwnerName = go.name;
         var uinodenamelist = new List<string>();
-        if (checkNodeNameDumplicated(uinodedatalist, ref uinodenamelist))
+        if (checkNodeNameDumplicated(uiNodeDataList, ref uinodenamelist))
         {
-            if (checkNodeBindTypeValidity(bct, uinodedatalist))
+            if (checkNodeBindTypeValidity(bct, uiNodeDataList))
             {
                 switch (bct)
                 {
                     case BinderCodeType.UIWindow:
-                        GenerateUIWindowCode(scriptownername, uinodedatalist);
-                        GenerateUIWindowBinderCode(scriptownername, uinodedatalist);
+                        GenerateUIWindowCode(scriptOwnerName, uiNodeDataList);
+                        GenerateUIWindowBinderCode(scriptOwnerName, uiNodeDataList);
                         return true;
                     case BinderCodeType.UICell:
-                        GenerateUICellCode(scriptownername, uinodedatalist);
-                        GenerateUICellBinderCode(scriptownername, uinodedatalist);
+                        GenerateUICellCode(scriptOwnerName, uiNodeDataList);
+                        GenerateUICellBinderCode(scriptOwnerName, uiNodeDataList);
                         return true;
                     case BinderCodeType.GameObject:
-                        GenerateGameObjectBinderCode(scriptownername, uinodedatalist);
+                        GenerateGameObjectBinderCode(scriptOwnerName, uiNodeDataList);
                         return true;
                     default:
                         Debug.LogError(string.Format("不支持的绑定代码生成类型 : {0}！", bct));
@@ -196,11 +191,11 @@ public static class ComponentBinderCodeGenerator
     /// <summary>
     /// 获取指定模板TextAsset
     /// </summary>
-    /// <param name="templatefilename">模板文件名</param>
+    /// <param name="templateFileName">模板文件名</param>
     /// <returns></returns>
-    private static TextAsset GetTemplateAsset(string templatefilename)
+    private static TextAsset GetTemplateAsset(string templateFileName)
     {
-        var relativepath = Path.Combine(UIBinderTemplateFolderPath, templatefilename);
+        var relativepath = Path.Combine(BinderTemplateFolderPath, templateFileName);
         var textasset = EditorGUIUtility.Load(relativepath);
         if (textasset != null)
         {
@@ -219,7 +214,7 @@ public static class ComponentBinderCodeGenerator
     /// <param name="componentBindNodeDatalist"></param>
     /// <param name="componentNodeNameList"></param>
     /// <returns></returns>
-    private static bool checkNodeNameDumplicated(List<ComponentBindData> componentBindNodeDatalist, ref List<string> componentNodeNameList)
+    private static bool checkNodeNameDumplicated(List<ComponentBinderData> componentBindNodeDatalist, ref List<string> componentNodeNameList)
     {
         foreach (var componentBindNodeData in componentBindNodeDatalist)
         {
@@ -272,7 +267,7 @@ public static class ComponentBinderCodeGenerator
     /// <param name="bct">当前代码生成类型</param>
     /// <param name="componentNodeDataList">节点信息列表</param>
     /// <returns></returns>
-    private static bool checkNodeBindTypeValidity(BinderCodeType bct, List<ComponentBindData> componentNodeDataList)
+    private static bool checkNodeBindTypeValidity(BinderCodeType bct, List<ComponentBinderData> componentNodeDataList)
     {
         foreach (var componentNodeData in componentNodeDataList)
         {
@@ -298,15 +293,40 @@ public static class ComponentBinderCodeGenerator
     }
 
     /// <summary>
+    /// 确保指定模板类型代码输出目录存在
+    /// </summary>
+    /// <param name="templateType"></param>
+    /// <returns></returns>
+    private static bool MakeSureOutputFolderExitByType(BinderTemplateType templateType)
+    {
+        var codeOutputFolderPath = ComponentBinderSetting.BinderSetting.GetCodeOutputPathByTemplateType(templateType);
+        if(string.IsNullOrEmpty(codeOutputFolderPath))
+        {
+            Debug.LogError($"未设置模板类型:{templateType}的有效代码输出目录,创建代码输出目录失败!");
+            return false;
+        }
+        if(!Directory.Exists(codeOutputFolderPath))
+        {
+            Directory.CreateDirectory(codeOutputFolderPath);
+        }
+        return true;
+    }
+
+    /// <summary>
     /// 生成窗口UI模板代码
     /// </summary>
     /// <param name="scriptOwnerName">脚本拥有者名字</param>
     /// <param name="uiNodeDataList">UI绑定节点数据</param>
-    private static void GenerateUIWindowCode(string scriptOwnerName, List<ComponentBindData> uiNodeDataList)
+    private static void GenerateUIWindowCode(string scriptOwnerName, List<ComponentBinderData> uiNodeDataList)
     {
         var templateContent = GetBinderTemplateFileContent(BinderTemplateType.UIWindowTemplate);
         if (templateContent == null)
         {
+            return;
+        }
+        if(!MakeSureOutputFolderExitByType(BinderTemplateType.UIWindowTemplate))
+        {
+            Debug.LogError($"未设置模板类型:{BinderTemplateType.UIWindowTemplate}的有效代码输出目录,生成模板类型:{BinderTemplateType.UIWindowTemplate}代码失败!");
             return;
         }
         var ttemplate = new TTemplate(templateContent);
@@ -323,25 +343,31 @@ public static class ComponentBinderCodeGenerator
         ttemplate.setValue(CreatedDateSingleTag, DateTime.Now.ToString("yyyy//MM/dd"));
 
         var finalcontent = ttemplate.getContent();
-        outputTemplateCodeGeneration(classname + ".cs", finalcontent);
+        var codeOutputFolderPath = ComponentBinderSetting.BinderSetting.GetCodeOutputPathByTemplateType(BinderTemplateType.UIWindowTemplate);
+        outputTemplateCodeGeneration(fileName + ".cs", finalcontent, codeOutputFolderPath);
     }
 
     /// <summary>
     /// 生成窗口UI组件绑定代码
     /// </summary>
-    /// <param name="scriptownername">脚本拥有者名字</param>
+    /// <param name="scriptOwnerName">脚本拥有者名字</param>
     /// <param name="uiNodeDataList">UI绑定节点数据</param>
-    private static void GenerateUIWindowBinderCode(string scriptownername, List<ComponentBindData> uiNodeDataList)
+    private static void GenerateUIWindowBinderCode(string scriptOwnerName, List<ComponentBinderData> uiNodeDataList)
     {
         var templatecontent = GetBinderTemplateFileContent(BinderTemplateType.UIWindowBinder);
         if(templatecontent == null)
         {
             return;
         }
+        if (!MakeSureOutputFolderExitByType(BinderTemplateType.UIWindowBinder))
+        {
+            Debug.LogError($"未设置模板类型:{BinderTemplateType.UIWindowBinder}的有效代码输出目录,生成模板类型:{BinderTemplateType.UIWindowBinder}代码失败!");
+            return;
+        }
         var ttemplate = new TTemplate(templatecontent);
         //通过自定义的替换规则和内容进行替换
         var fileName = $"{scriptOwnerName}{BinderFilePostFix}";
-        var classname = scriptownername;
+        var classname = scriptOwnerName;
         //替换文件名
         ttemplate.setValue(FileNameSingleTag, fileName);
         //替换类名
@@ -356,15 +382,16 @@ public static class ComponentBinderCodeGenerator
         ttemplate.endLoop();
         //替换UI节点成员变量初始化
         ttemplate.beginLoop(MemberInitLoopTag);
-        GenerateMemberInitCode(ttemplate, uiNodeDataList, DefaultUIBinderMemberName);
+        GenerateMemberInitCode(ttemplate, uiNodeDataList, DefaultBinderMemberName);
         ttemplate.endLoop();
         //替换UI节点成员释放
         ttemplate.beginLoop(MemberDisposeLoopTag);
-        GenerateMemberDisposeCode(ttemplate, uiNodeDataList, DefaultUIBinderMemberName);
+        GenerateMemberDisposeCode(ttemplate, uiNodeDataList, DefaultBinderMemberName);
         ttemplate.endLoop();
 
         var finalcontent = ttemplate.getContent();
-        outputTemplateCodeGeneration(classname + ".cs", finalcontent);
+        var codeOutputFolderPath = ComponentBinderSetting.BinderSetting.GetCodeOutputPathByTemplateType(BinderTemplateType.UIWindowBinder);
+        outputTemplateCodeGeneration(fileName + ".cs", finalcontent, codeOutputFolderPath);
     }
 
     /// <summary>
@@ -372,11 +399,16 @@ public static class ComponentBinderCodeGenerator
     /// </summary>
     /// <param name="scriptOwnerName">脚本拥有者名字</param>
     /// <param name="uiNodeDataList">UI绑定节点数据</param>
-    private static void GenerateUICellCode(string scriptOwnerName, List<ComponentBindData> uiNodeDataList)
+    private static void GenerateUICellCode(string scriptOwnerName, List<ComponentBinderData> uiNodeDataList)
     {
         var templatecontent = GetBinderTemplateFileContent(BinderTemplateType.UICellTemplate);
         if (templatecontent == null)
         {
+            return;
+        }
+        if (!MakeSureOutputFolderExitByType(BinderTemplateType.UICellTemplate))
+        {
+            Debug.LogError($"未设置模板类型:{BinderTemplateType.UICellTemplate}的有效代码输出目录,生成模板类型:{BinderTemplateType.UICellTemplate}代码失败!");
             return;
         }
         var ttemplate = new TTemplate(templatecontent);
@@ -393,7 +425,8 @@ public static class ComponentBinderCodeGenerator
         ttemplate.setValue(CreatedDateSingleTag, DateTime.Now.ToString("yyyy//MM/dd"));
 
         var finalcontent = ttemplate.getContent();
-        outputTemplateCodeGeneration(classname + ".cs", finalcontent);
+        var codeOutputFolderPath = ComponentBinderSetting.BinderSetting.GetCodeOutputPathByTemplateType(BinderTemplateType.UICellTemplate);
+        outputTemplateCodeGeneration(fileName + ".cs", finalcontent, codeOutputFolderPath);
     }
 
     /// <summary>
@@ -401,11 +434,16 @@ public static class ComponentBinderCodeGenerator
     /// </summary>
     /// <param name="scriptOwnerName">脚本拥有者名字</param>
     /// <param name="uiNodeDataList">UI绑定节点数据</param>
-    private static void GenerateUICellBinderCode(string scriptOwnerName, List<ComponentBindData> uiNodeDataList)
+    private static void GenerateUICellBinderCode(string scriptOwnerName, List<ComponentBinderData> uiNodeDataList)
     {
         var templatecontent = GetBinderTemplateFileContent(BinderTemplateType.UICellBinder);
         if (templatecontent == null)
         {
+            return;
+        }
+        if (!MakeSureOutputFolderExitByType(BinderTemplateType.UICellBinder))
+        {
+            Debug.LogError($"未设置模板类型:{BinderTemplateType.UICellBinder}的有效代码输出目录,生成模板类型:{BinderTemplateType.UICellBinder}代码失败!");
             return;
         }
         var ttemplate = new TTemplate(templatecontent);
@@ -426,32 +464,41 @@ public static class ComponentBinderCodeGenerator
         ttemplate.endLoop();
         //替换UI节点成员变量初始化
         ttemplate.beginLoop(MemberInitLoopTag);
-        GenerateMemberInitCode(ttemplate, uiNodeDataList, DefaultUIBinderMemberName);
+        GenerateMemberInitCode(ttemplate, uiNodeDataList, DefaultBinderMemberName);
         ttemplate.endLoop();
         //替换UI节点成员释放
         ttemplate.beginLoop(MemberDisposeLoopTag);
-        GenerateMemberDisposeCode(ttemplate, uiNodeDataList, DefaultUIBinderMemberName);
+        GenerateMemberDisposeCode(ttemplate, uiNodeDataList, DefaultBinderMemberName);
         ttemplate.endLoop();
 
         var finalcontent = ttemplate.getContent();
-        outputTemplateCodeGeneration(classname + ".cs", finalcontent);
+        var codeOutputFolderPath = ComponentBinderSetting.BinderSetting.GetCodeOutputPathByTemplateType(BinderTemplateType.UICellBinder);
+        outputTemplateCodeGeneration(fileName + ".cs", finalcontent, codeOutputFolderPath);
     }
 
     /// <summary>
     /// 生成GameObject Cell组件绑定代码
     /// </summary>
-    /// <param name="scriptownername">脚本拥有者名字</param>
-    /// <param name="uinodedatalist">UI绑定节点数据</param>
-    private static void GenerateGameObjectBinderCode(string scriptownername, List<ComponentBindData> uinodedatalist)
+    /// <param name="scriptOwnerName">脚本拥有者名字</param>
+    /// <param name="uiNodeDataList">UI绑定节点数据</param>
+    private static void GenerateGameObjectBinderCode(string scriptOwnerName, List<ComponentBinderData> uiNodeDataList)
     {
         var templatecontent = GetBinderTemplateFileContent(BinderTemplateType.GameObjectBinder);
         if (templatecontent == null)
         {
             return;
         }
+        if (!MakeSureOutputFolderExitByType(BinderTemplateType.GameObjectBinder))
+        {
+            Debug.LogError($"未设置模板类型:{BinderTemplateType.GameObjectBinder}的有效代码输出目录,生成模板类型:{BinderTemplateType.GameObjectBinder}代码失败!");
+            return;
+        }
         var ttemplate = new TTemplate(templatecontent);
         //通过自定义的替换规则和内容进行替换
-        var classname = scriptownername;
+        var fileName = $"{scriptOwnerName}{BinderFilePostFix}";
+        var classname = scriptOwnerName;
+        //替换文件名
+        ttemplate.setValue(FileNameSingleTag, fileName);
         //替换类名
         ttemplate.setValue(ClassNameSingleTag, classname);
         //作者名替换
@@ -460,31 +507,32 @@ public static class ComponentBinderCodeGenerator
         ttemplate.setValue(CreatedDateSingleTag, DateTime.Now.ToString("yyyy/MM/dd"));
         //递归判定，生成UI节点成员变量声明
         ttemplate.beginLoop(MemberDefinitionLoopTag);
-        GenerateMemberDefinitionCode(ttemplate, uinodedatalist);
+        GenerateMemberDefinitionCode(ttemplate, uiNodeDataList);
         ttemplate.endLoop();
         //替换UI节点成员变量初始化
         ttemplate.beginLoop(MemberInitLoopTag);
-        GenerateMemberInitCode(ttemplate, uinodedatalist, DefaultUIBinderMemberName);
+        GenerateMemberInitCode(ttemplate, uiNodeDataList, DefaultBinderMemberName);
         ttemplate.endLoop();
         //替换UI节点成员释放
         ttemplate.beginLoop(MemberDisposeLoopTag);
-        GenerateMemberDisposeCode(ttemplate, uinodedatalist, DefaultUIBinderMemberName);
+        GenerateMemberDisposeCode(ttemplate, uiNodeDataList, DefaultBinderMemberName);
         ttemplate.endLoop();
 
         var finalcontent = ttemplate.getContent();
-        outputTemplateCodeGeneration(classname + ".cs", finalcontent);
+        var codeOutputFolderPath = ComponentBinderSetting.BinderSetting.GetCodeOutputPathByTemplateType(BinderTemplateType.GameObjectBinder);
+        outputTemplateCodeGeneration(fileName + ".cs", finalcontent, codeOutputFolderPath);
     }
 
     /// <summary>
     /// 生成节点成员变量声明
     /// </summary>
     /// <param name="ttemplate">模板处理对象</param>
-    /// <param name="uinodedatalist">需要处理的ui节点数据列表</param>
-    private static void GenerateMemberDefinitionCode(TTemplate ttemplate, List<ComponentBindData> uinodedatalist)
+    /// <param name="uiNodeDataList">需要处理的ui节点数据列表</param>
+    private static void GenerateMemberDefinitionCode(TTemplate ttemplate, List<ComponentBinderData> uiNodeDataList)
     {
-        for (int i = 0, length = uinodedatalist.Count; i < length; i++)
+        for (int i = 0, length = uiNodeDataList.Count; i < length; i++)
         {
-            var uinodedata = uinodedatalist[i];
+            var uinodedata = uiNodeDataList[i];
             if (uinodedata.NodeTarget != null)
             {
                 var nodevariablename = uinodedata.VariableAlias.IsNullOrEmpty() ? uinodedata.NodeTarget.name : uinodedata.VariableAlias;
@@ -506,17 +554,17 @@ public static class ComponentBinderCodeGenerator
     /// 生成节点成员初始化声明
     /// </summary>
     /// <param name="ttemplate">模板处理对象</param>
-    /// <param name="uinodedatalist">需要处理的ui节点数据列表</param>
-    /// <param name="uinodemembername">当前处理的ui节点成员变量名</param>
-    private static void GenerateMemberInitCode(TTemplate ttemplate, List<ComponentBindData> uinodedatalist, string uinodemembername)
+    /// <param name="uiNodeDataList">需要处理的ui节点数据列表</param>
+    /// <param name="uiNodeMemberName">当前处理的ui节点成员变量名</param>
+    private static void GenerateMemberInitCode(TTemplate ttemplate, List<ComponentBinderData> uiNodeDataList, string uiNodeMemberName)
     {
-        for (int i = 0, length = uinodedatalist.Count; i < length; i++)
+        for (int i = 0, length = uiNodeDataList.Count; i < length; i++)
         {
-            var uinodedata = uinodedatalist[i];
+            var uinodedata = uiNodeDataList[i];
             if (uinodedata.NodeTarget != null)
             {
                 var nodevariablename = uinodedata.VariableAlias.IsNullOrEmpty() ? uinodedata.NodeTarget.name : uinodedata.VariableAlias;
-                ttemplate.setValue(NodeMemberNameSingleTag, uinodemembername);
+                ttemplate.setValue(NodeMemberNameSingleTag, uiNodeMemberName);
                 ttemplate.setValue(NodeNameSingleTag, nodevariablename);
                 ttemplate.setValue(NodeIndexSingleTag, i.ToString());
                 ttemplate.setValue(NodeTypeSingleTag, uinodedata.NodeTarget.GetType().Name);
@@ -535,13 +583,13 @@ public static class ComponentBinderCodeGenerator
     /// 生成节点成员释放声明
     /// </summary>
     /// <param name="ttemplate">模板处理对象</param>
-    /// <param name="uinodedatalist">需要处理的ui节点数据列表</param>
-    /// <param name="uinodemembername">当前处理的ui节点成员变量名</param>
-    private static void GenerateMemberDisposeCode(TTemplate ttemplate, List<ComponentBindData> uinodedatalist, string uinodemembername)
+    /// <param name="uiNodeDataList">需要处理的ui节点数据列表</param>
+    /// <param name="uiNodeMemberName">当前处理的ui节点成员变量名</param>
+    private static void GenerateMemberDisposeCode(TTemplate ttemplate, List<ComponentBinderData> uiNodeDataList, string uiNodeMemberName)
     {
-        for (int i = 0, length = uinodedatalist.Count; i < length; i++)
+        for (int i = 0, length = uiNodeDataList.Count; i < length; i++)
         {
-            var uinodedata = uinodedatalist[i];
+            var uinodedata = uiNodeDataList[i];
             if (uinodedata.NodeTarget != null)
             {
                 var nodevariablename = uinodedata.VariableAlias.IsNullOrEmpty() ? uinodedata.NodeTarget.name : uinodedata.VariableAlias;
@@ -576,18 +624,15 @@ public static class ComponentBinderCodeGenerator
     /// <summary>
     /// 输出自动化代码生成文件
     /// </summary>
-    /// <param name="filename">文件名</param>
-    /// <param name="filecontent">文件内容</param>
-    private static void outputTemplateCodeGeneration(string filename, string filecontent)
+    /// <param name="fileName">文件名</param>
+    /// <param name="fileContent">文件内容</param>
+    /// <param name="codeOutputFolderPath">代码输出目录</param>
+    private static void outputTemplateCodeGeneration(string fileName, string fileContent, string codeOutputFolderPath)
     {
-        if(!Directory.Exists(UIBinderCodeGeneratorOutputFolderPath))
-        {
-            Directory.CreateDirectory(UIBinderCodeGeneratorOutputFolderPath);
-        }
-        var filefullpath = Path.Combine(UIBinderCodeGeneratorOutputFolderPath, filename);
+        var filefullpath = Path.Combine(codeOutputFolderPath, fileName);
         using (var fs = File.Open(filefullpath, FileMode.Create, FileAccess.Write))
         {
-            Byte[] info = new UTF8Encoding(true).GetBytes(filecontent);
+            Byte[] info = new UTF8Encoding(true).GetBytes(fileContent);
             fs.Write(info, 0, info.Length);
             fs.Flush();
             fs.Close();

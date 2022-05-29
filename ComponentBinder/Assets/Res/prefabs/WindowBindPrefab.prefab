@@ -78,7 +78,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BindCodeTypeIndex: 0
-  NodeDatas: []
+  NodeDatas:
+  - NodeTarget: {fileID: 489323170554447247}
+    VariableAlias: 
+    NodeDes: "\u6839GameObject"
+  - NodeTarget: {fileID: 9131018860212723637}
+    VariableAlias: 
+    NodeDes: "\u6839RectTrasform"
+  - NodeTarget: {fileID: 1703397700531017099}
+    VariableAlias: 
+    NodeDes: "\u80CC\u666F\u56FE"
+  - NodeTarget: {fileID: 3756230831322366533}
+    VariableAlias: 
+    NodeDes: "\u5DE6\u4FA7\u6309\u94AE"
+  - NodeTarget: {fileID: 8287402077875709128}
+    VariableAlias: 
+    NodeDes: "\u53F3\u4FA7\u6309\u94AE"
 --- !u!1 &728914564122468593
 GameObject:
   m_ObjectHideFlags: 0

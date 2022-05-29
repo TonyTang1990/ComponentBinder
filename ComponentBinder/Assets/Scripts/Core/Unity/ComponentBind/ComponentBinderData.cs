@@ -1,5 +1,5 @@
 ﻿/*
- * Description:             ComponentBindData.cs
+ * Description:             ComponentBinderData.cs
  * Author:                  TONYTANG
  * Create Date:             2019//04/23
  */
@@ -11,7 +11,7 @@ using UnityEngine;
 /// 组件绑定节点信息
 /// </summary>
 [Serializable]
-public class ComponentBindData
+public class ComponentBinderData
 {
     /// <summary>
     /// 节点对象
@@ -31,7 +31,7 @@ public class ComponentBindData
     [SerializeField]
     public string NodeDes;
     
-    public ComponentBindData(UnityEngine.Object target)
+    public ComponentBinderData(UnityEngine.Object target)
     {
         NodeTarget = target;
         NodeDes = string.Empty;

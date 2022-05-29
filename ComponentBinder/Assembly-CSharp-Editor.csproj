@@ -54,9 +54,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Editor\AssetProcesserHook\ScriptAutoProcess\ScriptKeywordProcesser.cs" />
-    <Compile Include="Assets\Scripts\Editor\Core\Unity\ComponentBinder\ComponentBindNodeData.cs" />
     <Compile Include="Assets\Scripts\Editor\Core\Unity\ComponentBinder\ComponentBinderCodeGenerator.cs" />
     <Compile Include="Assets\Scripts\Editor\Core\Unity\ComponentBinder\ComponentBinderEditor.cs" />
+    <Compile Include="Assets\Scripts\Editor\Core\Unity\ComponentBinder\ComponentBinderNodeData.cs" />
+    <Compile Include="Assets\Scripts\Editor\Core\Unity\ComponentBinder\ComponentBinderSetting.cs" />
+    <Compile Include="Assets\Scripts\Editor\Core\Unity\ComponentBinder\ComponentBinderSettingEditor.cs" />
     <Compile Include="Assets\Scripts\Editor\Core\Unity\ComponentBinder\TTemplate.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -32,7 +32,7 @@ public class ComponentBinderEditor : Editor
     /// <summary>
     /// UI节点UI显示数据
     /// </summary>
-    private List<ComponentBindNodeData> mComponentBindNodeDatas;
+    private List<ComponentBinderNodeData> mComponentBindNodeDatas;
 
     /// <summary>
     /// 当前选择的节点对象
@@ -79,7 +79,7 @@ public class ComponentBinderEditor : Editor
     {
         if (mCustomGUISkin == null)
         {
-            mCustomGUISkin = EditorGUIUtility.Load("ComponentBind/TCustomGUISkin.guiskin") as GUISkin;
+            mCustomGUISkin = EditorGUIUtility.Load("ComponentBinder/TCustomGUISkin.guiskin") as GUISkin;
         }
         IsUnderPrefabMode = PrefabStageUtility.GetCurrentPrefabStage() != null;
     }
@@ -94,6 +94,7 @@ public class ComponentBinderEditor : Editor
         EditorGUILayout.BeginVertical(GUILayout.MinWidth(400.0f));
         initUIData();
         displayUITitle();
+        EditorGUI.BeginChangeCheck();
         displayComponentBindNodes();
         displayComponentBindNodesTitle();
         mIsFoldOut = EditorGUILayout.Foldout(mIsFoldOut, mIsFoldOut ? "收起" : "展开", true);
@@ -101,6 +102,10 @@ public class ComponentBinderEditor : Editor
         {
             displayAllComponentBindNodes();
             displayUIInteraction();
+        }
+        if (EditorGUI.EndChangeCheck())
+        {
+            EditorUtility.SetDirty(mTargetComponentBinder);
         }
         EditorGUILayout.EndVertical();
     }
@@ -112,7 +117,7 @@ public class ComponentBinderEditor : Editor
     {
         if (mComponentBindNodeDatas == null)
         {
-            mComponentBindNodeDatas = new List<ComponentBindNodeData>();
+            mComponentBindNodeDatas = new List<ComponentBinderNodeData>();
         }
 
         if (mAvalibleSelectedComponentArray == null)
@@ -128,7 +133,7 @@ public class ComponentBinderEditor : Editor
         var uinodedataslength = mTargetComponentBinder.NodeDatas.Count;
         for (int i = 0; i < uinodedataslength; i++)
         {
-            var uinodeuidata = new ComponentBindNodeData(i, mTargetComponentBinder.NodeDatas[i]);
+            var uinodeuidata = new ComponentBinderNodeData(i, mTargetComponentBinder.NodeDatas[i]);
             mComponentBindNodeDatas.Add(uinodeuidata);
         }
     }
@@ -161,9 +166,9 @@ public class ComponentBinderEditor : Editor
         mCurrentSelectedComponentIndex = EditorGUILayout.Popup(mCurrentSelectedComponentIndex, mAvalibleSelectedComponentArray, GUILayout.MinWidth(100.0f));
         if (pretypeindex != mCurrentSelectedComponentIndex && mCurrentSelectedComponentIndex > 0)
         {
-            var newuinodedata = new ComponentBindData(mAvalibleSelectedComponents[mCurrentSelectedComponentIndex]);
+            var newuinodedata = new ComponentBinderData(mAvalibleSelectedComponents[mCurrentSelectedComponentIndex]);
             mTargetComponentBinder.NodeDatas.Add(newuinodedata);
-            mComponentBindNodeDatas.Add(new ComponentBindNodeData(mTargetComponentBinder.NodeDatas.Count - 1, newuinodedata));
+            mComponentBindNodeDatas.Add(new ComponentBinderNodeData(mTargetComponentBinder.NodeDatas.Count - 1, newuinodedata));
             resetUINodeBindData();
         }
         EditorGUILayout.EndHorizontal();
@@ -226,7 +231,7 @@ public class ComponentBinderEditor : Editor
     /// 显示一个UI Node Editor节点
     /// </summary>
     /// <param name="componentNodeData"></param>
-    private void displayUINode(ComponentBindNodeData componentNodeData)
+    private void displayUINode(ComponentBinderNodeData componentNodeData)
     {
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField(componentNodeData.NodeIndex.ToString(), GUILayout.MinWidth(20.0f));
@@ -272,7 +277,7 @@ public class ComponentBinderEditor : Editor
     /// </summary>
     private void OpenExplore()
     {
-        var fullpath = Path.GetFullPath(ComponentBinderCodeGenerator.UIBinderCodeGeneratorOutputFolderPath);
+        var fullpath = Path.GetFullPath(ComponentBinderCodeGenerator.BinderCodeGeneratorOutputFolderPath);
         System.Diagnostics.Process.Start("explorer.exe", fullpath);
     }
 }

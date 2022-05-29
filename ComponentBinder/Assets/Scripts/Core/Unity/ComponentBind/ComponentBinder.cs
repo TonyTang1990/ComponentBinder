@@ -22,5 +22,5 @@ public class ComponentBinder : MonoBehaviour
     /// <summary>
     /// UI节点数据
     /// </summary>
-    public List<ComponentBindData> NodeDatas = new List<ComponentBindData>();
+    public List<ComponentBinderData> NodeDatas = new List<ComponentBinderData>();
 }

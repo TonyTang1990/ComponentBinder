@@ -17,13 +17,22 @@
 
 ## 组件绑定原理
 
-1. 通过Object数组实现通用类型的组件绑定存储
-2. 通过自定义Inspector实现绑定对象，绑定对象组件绑定选择以及模板类型选择，代码生成等UI操作界面
-3. 通过模板+代码生成实现组件绑定的自定义快速代码生成(通过生成partial代码不入侵原始逻辑代码)
+1. **通过Object数组实现通用类型的组件绑定存储**
+2. **通过自定义Inspector实现绑定对象，绑定对象组件绑定选择以及模板类型选择，代码生成等UI操作界面**
+3. **通过模板+代码生成实现组件绑定的自定义快速代码生成(通过生成partial代码不入侵原始逻辑代码)**
+4. **结合自定义ScriptableObject自定义不同模板类型的不同代码输出目录实现自定义代码目录输出设置**
+
+## 功能实现
+
+1. **支持通节点不同组件的绑定**
+2. **支持节点自定义变量名和注释定义**
+3. **支持自定义代码模板的选择生成**
+4. **支持组件绑定代码不入侵功能代码(利用partial class)功能生成代码**
+5. **支持不同模板类型代码生成输出目录设置**
 
 ## 实战实现
 
-### 组件绑定代
+### 组件绑定脚本
 
 ```CS
 /// <summary>
@@ -122,28 +131,27 @@ public class TTemplate
 窗口模板文件示例:
 
 ```CS
+/*
+ * Description:             #FileName#.cs
+ * Author:                  #Author#
+ * Create Date:             #CreatedDate#
+ */
+
+using UnityEngine;
+using UnityEngine.UI;
+using TH.Modules.UI;
+
 namespace Game.Modules.UI
-{
+{	
+	/// <summary>
+	/// #ClassName#窗口
+	/// </summary>
     public class #ClassName# : BaseWindow
     {
-		 #MEMBER_DEFINITION_LOOP#
-        /// <summary> #NodeDes# /// </summary>
-        private #NodeType# #NodeName#;#MEMBER_DEFINITION_LOOP#
-
 		public #ClassName#()
 		{
 
 		}
-		   
-		/// <summary>
-		/// 缓存组件
-		/// </summary>
-		protected override void cacheComponents()
-		{
-			base.cacheComponents();
-            #MEMBER_INIT_LOOP#
-            #NodeName# = #NodeMemberName#.NodeDatas[#NodeIndex#].NodeTarget as #NodeType#;#MEMBER_INIT_LOOP#
-        }
 
 		/// <summary>
 		/// 添加监听
@@ -170,16 +178,6 @@ namespace Game.Modules.UI
 		}
 		
 		/// <summary>
-		/// 释放组件
-		/// </summary>
-		protected override void disposeComponents()
-		{
-			base.disposeComponents();
-			#MEMBER_DISPOSE_LOOP#
-            #NodeName# = null;#MEMBER_DISPOSE_LOOP#
-		}
-
-		/// <summary>
 		/// 窗口销毁
 		/// </summary>
 		protected override void onDestroy()
@@ -193,29 +191,230 @@ namespace Game.Modules.UI
 窗口组件绑定模板示例:
 
 ```CS
+/*
+ * Description:             #FileName#.cs
+ * Author:                  #Author#
+ * Create Date:             #CreatedDate#
+ */
 
+using UnityEngine;
+using UnityEngine.UI;
+using TH.Modules.UI;
+
+namespace Game.Modules.UI
+{
+	/// <summary>
+	/// #ClassName#窗口的组件绑定
+	/// </summary>
+    public partial class #ClassName#
+    {
+		 #MEMBER_DEFINITION_LOOP#
+        /// <summary> #NodeDes# /// </summary>
+        private #NodeType# #NodeName#;#MEMBER_DEFINITION_LOOP#
+		   
+		/// <summary>
+		/// 缓存组件
+		/// </summary>
+		protected override void cacheComponents()
+		{
+			base.cacheComponents();
+            #MEMBER_INIT_LOOP#
+            #NodeName# = #NodeMemberName#.NodeDatas[#NodeIndex#].NodeTarget as #NodeType#;#MEMBER_INIT_LOOP#
+        }
+
+		/// <summary>
+		/// 释放组件
+		/// </summary>
+		protected override void disposeComponents()
+		{
+			base.disposeComponents();
+			#MEMBER_DISPOSE_LOOP#
+            #NodeName# = null;#MEMBER_DISPOSE_LOOP#
+		}
+    }
+}
 ```
 
+其他模板生成参考文件:
 
+CellUIBinder.txt，CellUITemplate.txt，GameObjectUIBinder.txt
 
+### 组件绑定设置
 
+```CS
+/// <summary>
+/// ComponentBindSetting.cs
+/// 组件绑定设置数据
+/// </summary>
+[CreateAssetMenu(fileName = "ComponentBinderSetting", menuName = "ScriptableObjects/ComponentBinderSetting", order = 1)]
+public class ComponentBinderSetting : ScriptableObject
+{
+    ******
+}
+```
+
+```CS
+/// <summary>
+/// ComponentBinderSettingEditor.cs
+/// 组件绑定自定义Editor
+/// </summary>
+[CustomEditor(typeof(ComponentBinderSetting))]
+[DisallowMultipleComponent]
+public class ComponentBinderSettingEditor : Editor
+{
+    ******
+}
+```
 
 ### 实战使用
 
+- 组件绑定设置
+
+  [ComponentBinderSettingUI](/img/ComponentBinderSettingUI.PNG)
+
 - 组件绑定选择
 
-[ComponentBindChosenUI](/img/Unity/ComponentBinder/ComponentBindChosenUI.PNG)
+  [ComponentBindChosenUI](/img/ComponentBindChosenUI.PNG)
 
 - 自定义绑定节点代码注释
 
-[CustomScriptNotation](/img/Unity/ComponentBinder/CustomScriptNotation.PNG)
+  [CustomScriptNotation](/img/CustomScriptNotation.PNG)
 
-- 
+- 窗口模板组件绑定设置以及代码生成
+
+  [WindowTemplateBindUsing](/img/WindowTemplateBindUsing.PNG)
+
+  ```CS
+  /*
+   * Description:             WindowBindPrefab.cs
+   * Author:                  TONYTANG
+   * Create Date:             2022//05/29
+   */
+  
+  using UnityEngine;
+  using UnityEngine.UI;
+  using TH.Modules.UI;
+  
+  namespace Game.Modules.UI
+  {	
+      /// <summary>
+      /// WindowBindPrefab窗口
+      /// </summary>
+      public class WindowBindPrefab : BaseWindow
+      {
+          public WindowBindPrefab()
+          {
+  
+          }
+  
+          /// <summary>
+          /// 添加监听
+          /// </summary>
+          protected override void addListeners()
+          {
+              base.addListeners();
+          }
+  
+          /// <summary>
+          /// 窗口显示
+          /// </summary>
+          protected override void onShow()
+          {
+              base.onShow();
+          }
+  
+          /// <summary>
+          /// 移除监听
+          /// </summary>
+          protected override void removeListeners()
+          {
+              base.removeListeners();
+          }
+  
+          /// <summary>
+          /// 窗口销毁
+          /// </summary>
+          protected override void onDestroy()
+          {
+              base.onDestroy();
+          }
+      }
+  }
+  
+  ```
+
+  ```CS
+  /*
+   * Description:             WindowBindPrefabBinder.cs
+   * Author:                  TONYTANG
+   * Create Date:             2022//05/29
+   */
+  
+  using UnityEngine;
+  using UnityEngine.UI;
+  using TH.Modules.UI;
+  
+  namespace Game.Modules.UI
+  {
+  	/// <summary>
+  	/// WindowBindPrefab窗口的组件绑定
+  	/// </summary>
+      public partial class WindowBindPrefab
+      {
+  		 
+          /// <summary> 根GameObject /// </summary>
+          private GameObject _rootGo;
+          /// <summary> 根RectTransform /// </summary>
+          private RectTransform _rootRect;
+          /// <summary> 背景图 /// </summary>
+          private Image imgBg;
+          /// <summary> 左侧按钮 /// </summary>
+          private Button btnLeftSwitch;
+          /// <summary> 右侧按钮 /// </summary>
+          private Button btnRightSwitch;
+  		   
+  		/// <summary>
+  		/// 缓存组件
+  		/// </summary>
+  		protected override void cacheComponents()
+  		{
+  			base.cacheComponents();
+              
+              _rootGo = mComponentBinder.NodeDatas[0].NodeTarget as GameObject;
+              _rootRect = mComponentBinder.NodeDatas[1].NodeTarget as RectTransform;
+              imgBg = mComponentBinder.NodeDatas[2].NodeTarget as Image;
+              btnLeftSwitch = mComponentBinder.NodeDatas[3].NodeTarget as Button;
+              btnRightSwitch = mComponentBinder.NodeDatas[4].NodeTarget as Button;
+          }
+  
+  		/// <summary>
+  		/// 释放组件
+  		/// </summary>
+  		protected override void disposeComponents()
+  		{
+  			base.disposeComponents();
+  			
+              _rootGo = null;
+              _rootRect = null;
+              imgBg = null;
+              btnLeftSwitch = null;
+              btnRightSwitch = null;
+  		}
+      }
+  }
+  ```
+
+更多的代码生成示例:
+
+[GameObjectBinderUI](/img/GameObjectBinderUI.PNG)
+
+[CellBinderUI](/img/CellBinderUI.PNG)
 
 ## 重点知识
 
-1. 
+1. **利用自定义UI结合Object[]实现自定义组件绑定数据序列化**
+2. **利用代码生成使用partial实现组件绑定代码无缝插入工程代码实现快速替换和访问**
 
 ## 博客
 
-[碰撞检测](
+![]()

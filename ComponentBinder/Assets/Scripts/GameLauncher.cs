@@ -21,7 +21,7 @@ public class GameLauncher : MonoBehaviour
     public Transform UICanvasNode;
 
     /// <summary>
-    /// 窗口组件绑定预制件
+    /// 窗口组件绑定预制件er
     /// </summary>
     [Header("窗口组件绑定预制件")]
     public GameObject WindowBindPrefab;
