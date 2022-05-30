@@ -49,7 +49,7 @@ public class ComponentBinder : MonoBehaviour
     /// <summary>
     /// UI节点数据
     /// </summary>
-    public List<ComponentBindData> NodeDatas = new List<ComponentBindData>();
+    public List<ComponentBinderData> NodeDatas = new List<ComponentBinderData>();
 }
 ```
 
@@ -58,7 +58,7 @@ public class ComponentBinder : MonoBehaviour
 /// 组件绑定节点信息
 /// </summary>
 [Serializable]
-public class ComponentBindData
+public class ComponentBinderData
 {
     /// <summary>
     /// 节点对象
@@ -78,7 +78,7 @@ public class ComponentBindData
     [SerializeField]
     public string NodeDes;
     
-    public ComponentBindData(UnityEngine.Object target)
+    public ComponentBinderData(UnityEngine.Object target)
     {
         NodeTarget = target;
         NodeDes = string.Empty;
@@ -409,6 +409,9 @@ public class ComponentBinderSettingEditor : Editor
 ![GameObjectBinderUI](./img/GameObjectBinderUI.PNG)
 
 ![CellBinderUI](./img/CellBinderUI.PNG)
+
+其他Github学习参考:
+[UIControlBindingPublic](https://github.com/Misaka-Mikoto-Tech/UIControlBinding)
 
 ## 重点知识
 
