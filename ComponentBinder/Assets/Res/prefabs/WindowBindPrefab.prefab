@@ -80,10 +80,10 @@ MonoBehaviour:
   BindCodeTypeIndex: 0
   NodeDatas:
   - NodeTarget: {fileID: 489323170554447247}
-    VariableAlias: 
+    VariableAlias: _rootGo
     NodeDes: "\u6839GameObject"
   - NodeTarget: {fileID: 9131018860212723637}
-    VariableAlias: 
+    VariableAlias: _rootRectranform
     NodeDes: "\u6839RectTrasform"
   - NodeTarget: {fileID: 1703397700531017099}
     VariableAlias: 

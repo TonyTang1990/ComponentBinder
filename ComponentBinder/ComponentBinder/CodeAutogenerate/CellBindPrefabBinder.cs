@@ -1,7 +1,7 @@
 /*
  * Description:             CellBindPrefabBinder.cs
  * Author:                  TONYTANG
- * Create Date:             2022//05/29
+ * Create Date:             2022//06/01
  */
 
 using UnityEngine;
@@ -13,11 +13,11 @@ namespace Game.Modules.UI
 	/// <summary>
 	/// CellBindPrefab单元格的组件绑定
 	/// </summary>
-	public partial class CellBindPrefab
+	public partial class CellBindPrefab : BaseCell
 	{
 		
-		/// <summary> 根RectTransform /// </summary>
-		private RectTransform CellBindPrefab;
+		/// <summary> 单元格根节点 /// </summary>
+		private GameObject CellBindPrefab;
 		/// <summary> 单元格背景 /// </summary>
 		private Image imgCellBG;
 		/// <summary> 单元格文本 /// </summary>
@@ -32,7 +32,7 @@ namespace Game.Modules.UI
 		{
 			base.cacheComponent();
 			
-			CellBindPrefab = mComponentBinder.NodeDatas[0].NodeTarget as RectTransform;
+			CellBindPrefab = mComponentBinder.NodeDatas[0].NodeTarget as GameObject;
 			imgCellBG = mComponentBinder.NodeDatas[1].NodeTarget as Image;
 			txtCell = mComponentBinder.NodeDatas[2].NodeTarget as Text;
 			btnCell = mComponentBinder.NodeDatas[3].NodeTarget as Button;

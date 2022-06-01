@@ -1,7 +1,7 @@
 /*
  * Description:             WindowBindPrefab.cs
  * Author:                  TONYTANG
- * Create Date:             2022//05/29
+ * Create Date:             2022//06/01
  */
 
 using UnityEngine;

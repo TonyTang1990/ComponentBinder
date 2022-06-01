@@ -258,6 +258,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 721414811}
     m_Modifications:
+    - target: {fileID: 819728770419483088, guid: 18e20a7be2d8ef64980a01ff4f744382,
+        type: 3}
+      propertyPath: BindCodeTypeIndex
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3062338842902839046, guid: 18e20a7be2d8ef64980a01ff4f744382,
         type: 3}
       propertyPath: m_RootOrder
@@ -721,6 +726,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_FontData.m_Alignment
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8496519263590514283, guid: ccb1683e31e9e674ead6a4dc361118d5,
+        type: 3}
+      propertyPath: BindCodeTypeIndex
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ccb1683e31e9e674ead6a4dc361118d5, type: 3}

@@ -206,7 +206,7 @@ namespace Game.Modules.UI
 	/// <summary>
 	/// #ClassName#窗口的组件绑定
 	/// </summary>
-    public partial class #ClassName#
+    public partial class #ClassName# : BaseWindow
     {
 		 #MEMBER_DEFINITION_LOOP#
         /// <summary> #NodeDes# /// </summary>
@@ -359,7 +359,7 @@ public class ComponentBinderSettingEditor : Editor
   	/// <summary>
   	/// WindowBindPrefab窗口的组件绑定
   	/// </summary>
-      public partial class WindowBindPrefab
+      public partial class WindowBindPrefab : BaseWindow
       {
   		 
           /// <summary> 根GameObject /// </summary>

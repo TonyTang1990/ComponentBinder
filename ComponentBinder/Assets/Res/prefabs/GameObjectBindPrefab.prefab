@@ -75,7 +75,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05081e3b5acd18f479f4836a7046b299, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BindCodeTypeIndex: 0
+  BindCodeTypeIndex: 2
   NodeDatas:
   - NodeTarget: {fileID: 3062338842902839046}
     VariableAlias: 
