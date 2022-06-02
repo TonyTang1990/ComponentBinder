@@ -78,9 +78,6 @@ public static class ComponentBinderCodeGenerator
     /// <summary> 单个类名替换标签 /// </summary>
     private const string ClassNameSingleTag = "#ClassName#";
 
-    /// <summary> 单个绑定节点成员变量名替换标签 /// </summary>
-    private const string BinderMemberNameSingleTag = "#BinderMemberName#";
-
     /// <summary> 单个节点描述替换标签 /// </summary>
     private const string NodeDesSingleTag = "#NodeDes#";
 
@@ -95,9 +92,6 @@ public static class ComponentBinderCodeGenerator
 
     /// <summary> 单个索引号替换标签 /// </summary>
     private const string NodeIndexSingleTag = "#NodeIndex#";
-
-    /// <summary> 单个绑定节点绝对路径替换标签 /// </summary>
-    private const string NodeAbsPathSingleTag = "#NodeAbsPath#";
 
     /// <summary> 成员循环释放标签 /// </summary>
     private const string MemberDisposeLoopTag = "#MEMBER_DISPOSE_LOOP#";

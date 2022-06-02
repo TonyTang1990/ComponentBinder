@@ -1,51 +1,55 @@
 /*
  * Description:             CellBindPrefab.cs
  * Author:                  TONYTANG
- * Create Date:             2022//06/01
+ * Create Date:             2022//06/02
  */
 
 using UnityEngine;
 using UnityEngine.UI;
 using TH.Modules.UI;
 
-namespace Game.Modules.UI
+/// <summary>
+/// CellBindPrefab单元格
+/// </summary>
+public partial class CellBindPrefab : BaseCell
 {
 	/// <summary>
-	/// CellBindPrefab单元格
+	/// 添加监听
 	/// </summary>
-	public class CellBindPrefab : BaseCell
+	protected override void addListeners()
 	{
-		/// <summary>
-		/// 添加监听
-		/// </summary>
-		protected override void addListeners()
-		{
-			base.addListeners();
-		}
+		base.addListeners();
+	}
 
-		/// <summary>
-		/// 移除监听
-		/// </summary>
-		protected override void removeListeners()
-		{
-			base.removeListeners();
-		}
+	/// <summary>
+	/// 添加事件监听
+	/// </summary>
+	protected override void addEvents()
+	{
+		base.addEvents();
+	}
 
-		/// <summary>
-		/// Cell显示
-		/// </summary>
-		protected override void onShow()
-		{
-			base.onShow();
-		}
+	/// <summary>
+	/// 移除监听
+	/// </summary>
+	protected override void removeListeners()
+	{
+		base.removeListeners();
+	}
 
-		/// <summary>
-		/// 销毁
-		/// </summary>
-		protected override void onDestroy()
-		{
-			base.onDestroy();
-		}
+	/// <summary>
+	/// Cell显示
+	/// </summary>
+	protected override void onShow()
+	{
+		base.onShow();
+	}
 
+	/// <summary>
+	/// 销毁
+	/// </summary>
+	protected override void onDestroy()
+	{
+		base.onDestroy();
 	}
 }

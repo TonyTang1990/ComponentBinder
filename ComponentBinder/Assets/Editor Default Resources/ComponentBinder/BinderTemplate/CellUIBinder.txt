@@ -8,35 +8,32 @@ using UnityEngine;
 using UnityEngine.UI;
 using TH.Modules.UI;
 
-namespace Game.Modules.UI
+/// <summary>
+/// #ClassName#单元格的组件绑定
+/// </summary>
+public partial class #ClassName# : BaseCell
 {
+	#MEMBER_DEFINITION_LOOP#
+	/// <summary> #NodeDes# /// </summary>
+	private #NodeType# #NodeName#;#MEMBER_DEFINITION_LOOP#
+
 	/// <summary>
-	/// #ClassName#单元格的组件绑定
+	/// 缓存组件
 	/// </summary>
-	public partial class #ClassName# : BaseCell
+	protected override void cacheComponent()
 	{
-		#MEMBER_DEFINITION_LOOP#
-		/// <summary> #NodeDes# /// </summary>
-		private #NodeType# #NodeName#;#MEMBER_DEFINITION_LOOP#
+		base.cacheComponent();
+		#MEMBER_INIT_LOOP#
+		#NodeName# = #NodeMemberName#.NodeDatas[#NodeIndex#].NodeTarget as #NodeType#;#MEMBER_INIT_LOOP#
+	}
 
-		/// <summary>
-		/// 缓存组件
-		/// </summary>
-		protected override void cacheComponent()
-		{
-			base.cacheComponent();
-			#MEMBER_INIT_LOOP#
-			#NodeName# = #NodeMemberName#.NodeDatas[#NodeIndex#].NodeTarget as #NodeType#;#MEMBER_INIT_LOOP#
-		}
-
-		/// <summary>
-		/// 清除组件
-		/// </summary>
-		protected override void clearComponent()
-		{
-			base.clearComponent();
-			#MEMBER_DISPOSE_LOOP#
-			#NodeName# = null;#MEMBER_DISPOSE_LOOP#
-		}
+	/// <summary>
+	/// 清除组件
+	/// </summary>
+	protected override void clearComponent()
+	{
+		base.clearComponent();
+		#MEMBER_DISPOSE_LOOP#
+		#NodeName# = null;#MEMBER_DISPOSE_LOOP#
 	}
 }

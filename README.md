@@ -141,49 +141,54 @@ using UnityEngine;
 using UnityEngine.UI;
 using TH.Modules.UI;
 
-namespace Game.Modules.UI
-{	
-	/// <summary>
-	/// #ClassName#窗口
-	/// </summary>
-    public class #ClassName# : BaseWindow
+/// <summary>
+/// #ClassName#窗口
+/// </summary>
+public partial class #ClassName# : BaseWindow
+{
+    public #ClassName#()
     {
-		public #ClassName#()
-		{
 
-		}
+    }
 
-		/// <summary>
-		/// 添加监听
-		/// </summary>
-		protected override void addListeners()
-		{
-			base.addListeners();
-		}
+    /// <summary>
+    /// 添加监听
+    /// </summary>
+    protected override void addListeners()
+    {
+        base.addListeners();
+    }
+    
+    /// <summary>
+    /// 添加事件监听
+    /// </summary>
+    protected override void addEvents()
+    {
+        base.addEvents();
+    }
+    
+    /// <summary>
+    /// 窗口显示
+    /// </summary>
+    protected override void onShow()
+    {
+        base.onShow();
+    }
 
-		/// <summary>
-		/// 窗口显示
-		/// </summary>
-		protected override void onShow()
-		{
-			base.onShow();
-		}
-		
-		/// <summary>
-		/// 移除监听
-		/// </summary>
-		protected override void removeListeners()
-		{
-			base.removeListeners();
-		}
-		
-		/// <summary>
-		/// 窗口销毁
-		/// </summary>
-		protected override void onDestroy()
-		{
-			base.onDestroy();
-		}
+    /// <summary>
+    /// 移除监听
+    /// </summary>
+    protected override void removeListeners()
+    {
+        base.removeListeners();
+    }
+
+    /// <summary>
+    /// 窗口销毁
+    /// </summary>
+    protected override void onDestroy()
+    {
+        base.onDestroy();
     }
 }
 ```
@@ -201,36 +206,33 @@ using UnityEngine;
 using UnityEngine.UI;
 using TH.Modules.UI;
 
-namespace Game.Modules.UI
+/// <summary>
+/// #ClassName#窗口的组件绑定
+/// </summary>
+public partial class #ClassName# : BaseWindow
 {
-	/// <summary>
-	/// #ClassName#窗口的组件绑定
-	/// </summary>
-    public partial class #ClassName# : BaseWindow
-    {
-		 #MEMBER_DEFINITION_LOOP#
+    #MEMBER_DEFINITION_LOOP#
         /// <summary> #NodeDes# /// </summary>
         private #NodeType# #NodeName#;#MEMBER_DEFINITION_LOOP#
-		   
-		/// <summary>
-		/// 缓存组件
-		/// </summary>
-		protected override void cacheComponents()
-		{
-			base.cacheComponents();
+
+            /// <summary>
+            /// 缓存组件
+            /// </summary>
+            protected override void cacheComponents()
+        {
+            base.cacheComponents();
             #MEMBER_INIT_LOOP#
-            #NodeName# = #NodeMemberName#.NodeDatas[#NodeIndex#].NodeTarget as #NodeType#;#MEMBER_INIT_LOOP#
+                #NodeName# = #NodeMemberName#.NodeDatas[#NodeIndex#].NodeTarget as #NodeType#;#MEMBER_INIT_LOOP#
         }
 
-		/// <summary>
-		/// 释放组件
-		/// </summary>
-		protected override void disposeComponents()
-		{
-			base.disposeComponents();
-			#MEMBER_DISPOSE_LOOP#
+    /// <summary>
+    /// 释放组件
+    /// </summary>
+    protected override void disposeComponents()
+    {
+        base.disposeComponents();
+        #MEMBER_DISPOSE_LOOP#
             #NodeName# = null;#MEMBER_DISPOSE_LOOP#
-		}
     }
 }
 ```
@@ -295,54 +297,59 @@ public class ComponentBinderSettingEditor : Editor
   using UnityEngine.UI;
   using TH.Modules.UI;
   
-  namespace Game.Modules.UI
-  {	
-      /// <summary>
-      /// WindowBindPrefab窗口
-      /// </summary>
-      public class WindowBindPrefab : BaseWindow
+  /// <summary>
+  /// WindowBindPrefab窗口
+  /// </summary>
+  public partial class WindowBindPrefab : BaseWindow
+  {
+      public WindowBindPrefab()
       {
-          public WindowBindPrefab()
-          {
   
-          }
+      }
   
-          /// <summary>
-          /// 添加监听
-          /// </summary>
-          protected override void addListeners()
-          {
-              base.addListeners();
-          }
+      /// <summary>
+      /// 添加监听
+      /// </summary>
+      protected override void addListeners()
+      {
+          base.addListeners();
+      }
+      
+      /// <summary>
+  	/// 添加事件监听
+  	/// </summary>
+  	protected override void addEvents()
+  	{
+  		base.addEvents();
+  	}
+      
+  	/// <summary>
+      /// 窗口显示
+      /// </summary>
+      protected override void onShow()
+      {
+          base.onShow();
+      }
   
-          /// <summary>
-          /// 窗口显示
-          /// </summary>
-          protected override void onShow()
-          {
-              base.onShow();
-          }
+      /// <summary>
+      /// 移除监听
+      /// </summary>
+      protected override void removeListeners()
+      {
+          base.removeListeners();
+      }
   
-          /// <summary>
-          /// 移除监听
-          /// </summary>
-          protected override void removeListeners()
-          {
-              base.removeListeners();
-          }
-  
-          /// <summary>
-          /// 窗口销毁
-          /// </summary>
-          protected override void onDestroy()
-          {
-              base.onDestroy();
-          }
+      /// <summary>
+      /// 窗口销毁
+      /// </summary>
+      protected override void onDestroy()
+      {
+        base.onDestroy();
       }
   }
   
   ```
-
+  
   ```CS
   /*
    * Description:             WindowBindPrefabBinder.cs
@@ -354,52 +361,49 @@ public class ComponentBinderSettingEditor : Editor
   using UnityEngine.UI;
   using TH.Modules.UI;
   
-  namespace Game.Modules.UI
+  /// <summary>
+  /// WindowBindPrefab窗口的组件绑定
+  /// </summary>
+  public partial class WindowBindPrefab : BaseWindow
   {
-  	/// <summary>
-  	/// WindowBindPrefab窗口的组件绑定
-  	/// </summary>
-      public partial class WindowBindPrefab : BaseWindow
-      {
-  		 
-          /// <summary> 根GameObject /// </summary>
-          private GameObject _rootGo;
-          /// <summary> 根RectTransform /// </summary>
-          private RectTransform _rootRect;
-          /// <summary> 背景图 /// </summary>
-          private Image imgBg;
-          /// <summary> 左侧按钮 /// </summary>
-          private Button btnLeftSwitch;
-          /// <summary> 右侧按钮 /// </summary>
-          private Button btnRightSwitch;
-  		   
-  		/// <summary>
-  		/// 缓存组件
-  		/// </summary>
-  		protected override void cacheComponents()
-  		{
-  			base.cacheComponents();
-              
-              _rootGo = mComponentBinder.NodeDatas[0].NodeTarget as GameObject;
-              _rootRect = mComponentBinder.NodeDatas[1].NodeTarget as RectTransform;
-              imgBg = mComponentBinder.NodeDatas[2].NodeTarget as Image;
-              btnLeftSwitch = mComponentBinder.NodeDatas[3].NodeTarget as Button;
-              btnRightSwitch = mComponentBinder.NodeDatas[4].NodeTarget as Button;
-          }
   
-  		/// <summary>
-  		/// 释放组件
-  		/// </summary>
-  		protected override void disposeComponents()
-  		{
-  			base.disposeComponents();
-  			
-              _rootGo = null;
-              _rootRect = null;
-              imgBg = null;
-              btnLeftSwitch = null;
-              btnRightSwitch = null;
-  		}
+      /// <summary> 根GameObject /// </summary>
+      private GameObject _rootGo;
+      /// <summary> 根RectTransform /// </summary>
+      private RectTransform _rootRect;
+      /// <summary> 背景图 /// </summary>
+      private Image imgBg;
+      /// <summary> 左侧按钮 /// </summary>
+      private Button btnLeftSwitch;
+      /// <summary> 右侧按钮 /// </summary>
+      private Button btnRightSwitch;
+  
+      /// <summary>
+      /// 缓存组件
+      /// </summary>
+      protected override void cacheComponents()
+      {
+          base.cacheComponents();
+  
+          _rootGo = mComponentBinder.NodeDatas[0].NodeTarget as GameObject;
+          _rootRect = mComponentBinder.NodeDatas[1].NodeTarget as RectTransform;
+          imgBg = mComponentBinder.NodeDatas[2].NodeTarget as Image;
+          btnLeftSwitch = mComponentBinder.NodeDatas[3].NodeTarget as Button;
+          btnRightSwitch = mComponentBinder.NodeDatas[4].NodeTarget as Button;
+      }
+  
+      /// <summary>
+      /// 释放组件
+      /// </summary>
+      protected override void disposeComponents()
+      {
+          base.disposeComponents();
+  
+          _rootGo = null;
+          _rootRect = null;
+          imgBg = null;
+          btnLeftSwitch = null;
+          btnRightSwitch = null;
       }
   }
   ```
