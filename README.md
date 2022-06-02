@@ -316,12 +316,12 @@ public class ComponentBinderSettingEditor : Editor
       }
       
       /// <summary>
-  	/// 添加事件监听
-  	/// </summary>
+      /// 添加事件监听
+      /// </summary>
   	protected override void addEvents()
-  	{
-  		base.addEvents();
-  	}
+      {
+          base.addEvents();
+      }
       
   	/// <summary>
       /// 窗口显示
