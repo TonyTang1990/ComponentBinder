@@ -318,7 +318,7 @@ public class ComponentBinderSettingEditor : Editor
       /// <summary>
       /// 添加事件监听
       /// </summary>
-  	protected override void addEvents()
+      protected override void addEvents()
       {
           base.addEvents();
       }
@@ -344,7 +344,7 @@ public class ComponentBinderSettingEditor : Editor
       /// </summary>
       protected override void onDestroy()
       {
-        base.onDestroy();
+          base.onDestroy();
       }
   }
   
