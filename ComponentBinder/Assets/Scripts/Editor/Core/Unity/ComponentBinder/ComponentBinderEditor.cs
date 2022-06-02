@@ -211,9 +211,9 @@ public class ComponentBinderEditor : Editor
         {
             var bindCodeType = (ComponentBinderCodeGenerator.BinderCodeType)Enum.Parse(typeof(ComponentBinderCodeGenerator.BinderCodeType), mAvalaibleBindCodeTypes[mTargetComponentBinder.BindCodeTypeIndex]);
             var targetGameObject = (target as ComponentBinder).gameObject;
-            if (ComponentBinderCodeGenerator.GenerateCode(bindCodeType, targetGameObject, mTargetComponentBinder.NodeDatas))
+            if (!ComponentBinderCodeGenerator.GenerateCode(bindCodeType, targetGameObject, mTargetComponentBinder.NodeDatas))
             {
-                OpenExplore();
+                Debug.LogError($"生成代码失败!");
             }
         }
         if (IsUnderPrefabMode)
@@ -270,14 +270,5 @@ public class ComponentBinderEditor : Editor
         }
         mCurrentSelectedComponent = null;
         mCurrentSelectedComponentIndex = 0;
-    }
-
-    /// <summary>
-    /// 打开文件夹浏览
-    /// </summary>
-    private void OpenExplore()
-    {
-        var fullpath = Path.GetFullPath(ComponentBinderCodeGenerator.BinderCodeGeneratorOutputFolderPath);
-        System.Diagnostics.Process.Start("explorer.exe", fullpath);
     }
 }

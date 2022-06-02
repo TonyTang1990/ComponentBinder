@@ -53,9 +53,6 @@ public static class ComponentBinderCodeGenerator
     /// <summary> 默认Binder模本文件目录路径 /// </summary>
     private const string BinderTemplateFolderPath = "ComponentBinder/BinderTemplate/";
 
-    /// <summary> 默认Binder自动化代码生成输出目录 /// </summary>
-    public static string BinderCodeGeneratorOutputFolderPath = Path.Combine(Application.dataPath, "../ComponentBinder/CodeAutogenerate/");
-
     /// <summary> 默认的节点绑定成员名 /// </summary>
     private const string DefaultBinderMemberName = "mComponentBinder";
 
@@ -345,6 +342,7 @@ public static class ComponentBinderCodeGenerator
         var finalcontent = ttemplate.getContent();
         var codeOutputFolderPath = ComponentBinderSetting.BinderSetting.GetCodeOutputPathByTemplateType(BinderTemplateType.UIWindowTemplate);
         outputTemplateCodeGeneration(fileName + ".cs", finalcontent, codeOutputFolderPath);
+        FolderUtilities.OpenFolder(codeOutputFolderPath);
     }
 
     /// <summary>
@@ -392,6 +390,7 @@ public static class ComponentBinderCodeGenerator
         var finalcontent = ttemplate.getContent();
         var codeOutputFolderPath = ComponentBinderSetting.BinderSetting.GetCodeOutputPathByTemplateType(BinderTemplateType.UIWindowBinder);
         outputTemplateCodeGeneration(fileName + ".cs", finalcontent, codeOutputFolderPath);
+        FolderUtilities.OpenFolder(codeOutputFolderPath);
     }
 
     /// <summary>
@@ -427,6 +426,7 @@ public static class ComponentBinderCodeGenerator
         var finalcontent = ttemplate.getContent();
         var codeOutputFolderPath = ComponentBinderSetting.BinderSetting.GetCodeOutputPathByTemplateType(BinderTemplateType.UICellTemplate);
         outputTemplateCodeGeneration(fileName + ".cs", finalcontent, codeOutputFolderPath);
+        FolderUtilities.OpenFolder(codeOutputFolderPath);
     }
 
     /// <summary>
@@ -474,6 +474,7 @@ public static class ComponentBinderCodeGenerator
         var finalcontent = ttemplate.getContent();
         var codeOutputFolderPath = ComponentBinderSetting.BinderSetting.GetCodeOutputPathByTemplateType(BinderTemplateType.UICellBinder);
         outputTemplateCodeGeneration(fileName + ".cs", finalcontent, codeOutputFolderPath);
+        FolderUtilities.OpenFolder(codeOutputFolderPath);
     }
 
     /// <summary>
@@ -521,6 +522,7 @@ public static class ComponentBinderCodeGenerator
         var finalcontent = ttemplate.getContent();
         var codeOutputFolderPath = ComponentBinderSetting.BinderSetting.GetCodeOutputPathByTemplateType(BinderTemplateType.GameObjectBinder);
         outputTemplateCodeGeneration(fileName + ".cs", finalcontent, codeOutputFolderPath);
+        FolderUtilities.OpenFolder(codeOutputFolderPath);
     }
 
     /// <summary>
